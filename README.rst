@@ -19,6 +19,8 @@ Installation
   cd fhs-m3u2strm
   pip3 install .
 
+  # And in the future also
+
   pipx install fhs_m3u2strm
   or
   pip3 install fhs_m3u2strm

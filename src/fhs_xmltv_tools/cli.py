@@ -46,15 +46,29 @@ def channel_details(
 @main.command()
 def analyze_programs(
     xmltv_file: str = typer.Option(..., help="read xmltv file", envvar="fhs_xmltv_file"),
+    force_color: bool = typer.Option(False, "--force-color", help="force color in pipelines"),
 ):
     """Analyze channels xml."""
+    from rich.console import Console
+    from rich.table import Table
     from .xmltv_load_save import xmltv_load
     from .xmltv_programs import analyze_programs
 
-    data=xmltv_load(xmltv_file)
-    result = analyze_programs(data)
-    pprint(result)
+    console = Console(force_terminal=force_color)
+    with console.status("Loading...", spinner='dots'):
+        data=xmltv_load(xmltv_file)
 
+    with console.status("Analysing...", spinner='dots'):
+         result = analyze_programs(data)
+
+    table = Table(title="Channels")
+    table.add_column("Id", style="cyan")
+    table.add_column("start time", style="green")
+    table.add_column("end time", style="cyan")
+    table.add_column("programs", justify="right", style="green")
+    for p in result:
+        table.add_row(p, result[p]['first_start'], result[p]['last_stop'], str(result[p]['programs']))
+    console.print(table)
 
 
 if __name__ == "__main__":

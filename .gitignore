@@ -40,3 +40,4 @@ nosetests.xml
 .pydevproject
 workdir
 *.log
+README.rst~
