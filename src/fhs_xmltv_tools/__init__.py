@@ -1,3 +1,3 @@
-"""fhs_xmltv_tools - xmltv tools"""
+"""fhs_xmltv_tools - xmltv tools."""
 
-from .__version__ import *
+from .__version__ import *  # noqa: F401,F403

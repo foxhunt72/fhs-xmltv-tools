@@ -1,4 +1,4 @@
-"""fhs_xmltv_tools - xmltv tools versions """
+"""fhs_xmltv_tools - xmltv tools versions."""
 
 __version__ = "0.1.1"
 __author__ = "Richard de Vos <rdevos72@gmail.com>"

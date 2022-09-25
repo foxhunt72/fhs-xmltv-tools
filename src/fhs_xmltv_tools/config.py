@@ -1,3 +1,3 @@
-# settings
+"""Config import for global settings."""
 
-lang=""
+LANG = ""
