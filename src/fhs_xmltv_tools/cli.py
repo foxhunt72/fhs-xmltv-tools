@@ -48,7 +48,8 @@ def list_channels(
 
 @main.command()
 def channel_details(
-    index: int,
+    index: int = 0,
+    channelid: str = "",
     xmltv_file: str = typer.Option(  # noqa: B008
         ..., help="read xmltv file", envvar="fhs_xmltv_file"
     ),
@@ -56,15 +57,28 @@ def channel_details(
     """List channels xml.
 
     Args:
-        index: channel id in list
+        index: channel index in list, number van 1 to len(list)
+        channelid: channelid to search
         xmltv_file: xmltv file to use
 
     """
     from .xmltv_load_save import xmltv_load
     from .xmltv_programs import xmltv_programs_test
+    from .xmltv_channels import get_channel_by_channel_id
+
+    if index == 0 and channelid == "":
+        print("needs index or channelid option")
+        exit(1)
+
+    if index != 0 and channelid != "":
+        print("needs only index or channelid option, not both.")
+        exit(2)
 
     data = xmltv_load(xmltv_file)
-    channel = data.channel[index - 1]
+    if index != 0:
+        channel = data.channel[index - 1]
+    else:
+        channel = get_channel_by_channel_id(data, channelid)
     pprint(channel)
     print("")
     print("")
@@ -156,6 +170,50 @@ def search_program(
     for p in result:
         table.add_row(p["channel"], p["start"], p["stop"], p["title"], p["description"])
     console.print(table)
+
+
+@main.command()
+def write_xmlfile_channels(
+    channel_file: str,
+    xmltv_file: str = typer.Option(  # noqa: B008
+        ..., help="read xmltv file", envvar="fhs_xmltv_file"
+    ),
+    xmltv_out: str = typer.Option(  # noqa: B008
+        ..., help="write xmltv file", envvar="fhs_xmltv_out"
+    ),
+    force_color: bool = typer.Option(  # noqa: B008
+        None, "--force-color/--no-color", help="force color in pipelines"
+    ),
+):
+    """Write xmlfile with only used channels to xml.
+
+    Args:
+        channel_file: file with channels one per line
+        xmltv_file: xmltv file to use
+        xmltv_out: write xmltv file
+        force_color: force color in pipeline for example
+    """
+    from rich.console import Console
+    from .xmltv_load_save import xmltv_load, xmltv_save
+    from .xmltv_channels import channels_remove_all_channels_not_in_list
+    from .xmltv_programs import programme_remove_all_channels_not_in_list
+
+    with open(channel_file, "r") as f:
+        channels = set(f.read().splitlines())
+
+    console = Console(force_terminal=force_color)
+    # load xmltv file
+    with console.status("Loading...", spinner="dots"):
+        data = xmltv_load(xmltv_file)
+
+    with console.status("Removing channels...", spinner="dots"):
+        data = channels_remove_all_channels_not_in_list(data, channels)
+
+    with console.status("Removing programs...", spinner="dots"):
+        data = programme_remove_all_channels_not_in_list(data, channels)
+
+    with console.status("Saving...", spinner="dots"):
+        xmltv_save(xmltv_out, data)
 
 
 if __name__ == "__main__":

@@ -159,3 +159,19 @@ def search_programs(xmltv_data, search_str, force_case=False):
             continue
         result.append(search_program_create_program_return(p))
     return result
+
+
+def programme_remove_all_channels_not_in_list(xmltv_data, channel_set):
+    """Remove all programs on channels that are not in the list.
+
+    Args:
+        xmltv_data: data object with xmltv data.
+        channel_set: set of channel id you want to keep
+
+    Returns:
+        xmltv_data
+    """
+    for p in range(len(xmltv_data.programme), 0, -1):
+        if (xmltv_data.programme[p - 1]).channel not in channel_set:
+            del xmltv_data.programme[p - 1]
+    return xmltv_data
