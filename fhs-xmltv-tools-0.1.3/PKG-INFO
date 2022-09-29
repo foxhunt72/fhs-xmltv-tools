@@ -1,0 +1,62 @@
+Metadata-Version: 2.1
+Name: fhs-xmltv-tools
+Version: 0.1.3
+Summary: xmltv tools
+Home-page: https://github.com/foxhunt72/fhs-xmltv-tools
+Author: Richard de Vos
+Author-email: rdevos72@gmail.com
+License: MIT license
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+
+fhs_xmltv_tools
+===============
+
+
+I wanted to know more about the xmltv xml file i downloaded for my iptv and i wanted to know how it all worked.
+So i am startig to create my own tools
+
+
+
+Usage
+-----
+
+Installation
+------------
+
+.. code-block:: bash
+
+  git clone https://github.com/foxhunt72/fhs-m3u2strm
+  cd fhs-m3u2strm
+  pip3 install .
+
+  # And in the future also
+
+  pipx install fhs_m3u2strm
+  or
+  pip3 install fhs_m3u2strm
+
+
+Requirements
+^^^^^^^^^^^^
+- typer[all]
+- py-xmltv
+
+Compatibility
+-------------
+
+
+Licence
+-------
+MIT Licencse
+
+Authors
+-------
+Richard de Vos
+
+`fhs_xmltv_tools` was written by `Richard de Vos <rdevos72@gmail.com>`_.
