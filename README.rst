@@ -15,21 +15,22 @@ Installation
 
 .. code-block:: bash
 
-  git clone https://github.com/foxhunt72/fhs-m3u2strm
-  cd fhs-m3u2strm
+  git clone https://github.com/foxhunt72/fhs-xmltv-tools
+  cd fhs-xmltv-tools
   pip3 install .
 
   # And in the future also
 
-  pipx install fhs_m3u2strm
+  pipx install fhs_xmltv_tools
   or
-  pip3 install fhs_m3u2strm
+  pip3 install fhs_xmltv_tools
 
 
 Requirements
 ^^^^^^^^^^^^
 - typer[all]
 - py-xmltv
+- pyyaml
 
 Compatibility
 -------------

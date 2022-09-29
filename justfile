@@ -85,7 +85,7 @@ publish:
   export PKG_NAME="$(python setup.py --name)"
   export PKG_VERSION="$(python setup.py --version)"
   export PKG_FILE="dist/${PKG_NAME}-${PKG_VERSION}.tar.gz"
-  twine upload "$PKG_FILE"
+  twine upload -r pypi "$PKG_FILE"
   # twine upload dist/*
 
 pytest-failure:
