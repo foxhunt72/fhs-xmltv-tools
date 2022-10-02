@@ -103,30 +103,15 @@ def analyse_programs(
 
     """
     from rich.console import Console
-    from rich.table import Table
-    from .xmltv_load_save import xmltv_load
-    from .xmltv_programs import analyse_programs
+    from .xmltv_programs import display_table_analyse_programs
 
     console = Console(force_terminal=force_color)
+    from .xmltv_load_save import xmltv_load
+
     with console.status("Loading...", spinner="dots"):
         data = xmltv_load(xmltv_file)
 
-    with console.status("Analysing...", spinner="dots"):
-        result = analyse_programs(data)
-
-    table = Table(title="Channels")
-    table.add_column("Id", style="cyan")
-    table.add_column("start time", style="green")
-    table.add_column("end time", style="cyan")
-    table.add_column("programs", justify="right", style="green")
-    for p in result:
-        table.add_row(
-            p,
-            result[p]["first_start"],
-            result[p]["last_stop"],
-            str(result[p]["programs"]),
-        )
-    console.print(table)
+    display_table_analyse_programs(console, data)
 
 
 @main.command()

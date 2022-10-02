@@ -181,6 +181,26 @@ def play_command_change_timezone(task):
     return True
 
 
+def play_command_analyse_programs(task):
+    """Analyse programs for a store.
+
+    Args:
+        task: task array
+
+    Returns:
+        Good: boolean
+    """
+    from .xmltv_programs import display_table_analyse_programs
+
+    check_console()
+    store = task.get("store", "default")
+    title = task.get("title", None)
+    display_table_analyse_programs(
+        config.CONSOLE, config.STORE[store], add_source_column=True, source_name=title
+    )
+    return True
+
+
 def play_task(task):
     """Play a task.
 
@@ -194,6 +214,9 @@ def play_task(task):
     if "command" not in task:
         sys.stderr.write(f"missing command entry in task {str(task)}")
         exit(3)
+
+    if task["command"] == "analyse_programs":
+        return play_command_analyse_programs(task)
 
     if task["command"] == "loadxml":
         return play_command_loadxml(task)

@@ -209,3 +209,52 @@ def search_and_replace_in_start_and_stop(xmltv_data, search, replace):
         p.start = p.start.replace(search, replace)
         p.stop = p.stop.replace(search, replace)
     return xmltv_data
+
+
+def display_table_analyse_programs(
+    console, xmltv_data, add_source_column=False, source_name=None
+):
+    """Display table analyse programs.
+
+    Args:
+        xmltv_data: data object with xmltv data.
+        console: rich.console object
+        add_source_column: add a source info column
+        source_name: name to use for source_info_name
+    """
+    from rich.console import Console
+    from rich.table import Table
+
+    if console is None:
+        console = Console()
+
+    with console.status("Analysing...", spinner="dots"):
+        result = analyse_programs(xmltv_data)
+
+    if source_name is None:
+        source_name = xmltv_data.source_info_name
+
+    table = Table(title=f"Channels: {source_name}")
+    if add_source_column:
+        table.add_column("Source name", style="green")
+    table.add_column("Id", style="cyan")
+    table.add_column("start time", style="green")
+    table.add_column("end time", style="cyan")
+    table.add_column("programs", justify="right", style="green")
+    for p in result:
+        if add_source_column:
+            table.add_row(
+                source_name,
+                p,
+                result[p]["first_start"],
+                result[p]["last_stop"],
+                str(result[p]["programs"]),
+            )
+        else:
+            table.add_row(
+                p,
+                result[p]["first_start"],
+                result[p]["last_stop"],
+                str(result[p]["programs"]),
+            )
+    console.print(table)
