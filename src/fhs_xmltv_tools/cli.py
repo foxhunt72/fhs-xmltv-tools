@@ -1,6 +1,7 @@
 """Console script for fhs_xmltv_tools."""
 import sys
 from pprint import pprint
+from typing import List, Optional
 
 from fhs_xmltv_tools import config  # noqa: F401
 
@@ -12,8 +13,8 @@ main = typer.Typer(pretty_exceptions_show_locals=False)
 @main.command()
 def list_channels(
     xmltv_file: str = typer.Option(  # noqa: B008
-        ..., help="read xmltv file", envvar="fhs_xmltv_file"
-    ),
+        ..., help="read xmltv file", envvar="fhs_xmltv_file", prompt=True
+    ),  # noqa: B008
     ignore_empty_id: bool = typer.Option(False, "--ignore-empty-id"),  # noqa: B008
     force_color: bool = typer.Option(  # noqa: B008
         None, "--force-color/--no-color", help="force color in pipelines"
@@ -250,23 +251,27 @@ def join_xml_files(
 @main.command()
 def run_tasks(
     yaml_command: str = typer.Option(  # noqa: B008
-        ..., help="read yaml file", envvar="fhs_xmltv_yaml"
+        ..., help="read yaml file", envvar="fhs_xmltv_yaml", prompt=True
     ),
     force_color: bool = typer.Option(  # noqa: B008
         None, "--force-color/--no-color", help="force color in pipelines"
     ),
+    include_tag: Optional[List[str]] = typer.Option(None),  # noqa: B008
+    exclude_tag: Optional[List[str]] = typer.Option(None),  # noqa: B008
 ):
     """Run tasks in yaml file.
 
     Args:
         yaml_command: xmltv file to use
         force_color: force color in pipeline for example
+        include_tag: tags from task to include
+        exclude_tag: exclude tasks with this tag
     """
     from rich.console import Console
     from .playyaml import play
 
     config.CONSOLE = Console(force_terminal=force_color)
-    play(yaml_command)
+    play(yaml_command, include_tag, exclude_tag)
 
 
 if __name__ == "__main__":

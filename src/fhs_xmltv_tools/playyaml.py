@@ -201,8 +201,8 @@ def play_command_analyse_programs(task):
     return True
 
 
-def play_task(task):
-    """Play a task.
+def play_command_execute_command(task):
+    """Execute a program.
 
     Args:
         task: task array
@@ -210,7 +210,78 @@ def play_task(task):
     Returns:
         Good: boolean
     """
-    print(f"running task: {task.get('name', 'unknown')}")
+    from .playyaml_funcs import execute_command
+
+    if "execute" not in task and "execute_base64" not in task:
+        sys.stderr.write(f"missing execute or execute_base64 entry in task {str(task)}")
+        exit(3)
+
+    if "execute_base64" in task:
+        from .playyaml_funcs import base64_2_str
+
+        execute = base64_2_str(task.get("execute_base64"))
+    else:
+        execute = task.get("execute")
+    shell = task.get("shell", False)
+    capture_output = task.get("capture_output", True)
+
+    result = execute_command(
+        execute, shell=shell, capture_output=capture_output  # noqa:S604
+    )  # noqa:S604
+    if capture_output:
+        print(result.stdout)
+        print(result.stderr)
+        print(f"error_code: {result.returncode}")
+    return True
+
+
+def task_check_tag(task, include_tags=None, exclude_tags=None):
+    """Check if the task have a tag and if we skip or not this task.
+
+    Args:
+        task: task array
+        include_tags: list of tags to run
+        exclude_tags: list of tags to skip
+
+    Returns:
+        RunTask: boolean, True run task, False skip task
+    """
+    from fhs_xmltv_tools.playyaml_funcs import check_items_in_2_lists
+
+    temp_tags = task.get('tags', [])
+    tags = temp_tags if isinstance(temp_tags, list) else [temp_tags]
+
+    if include_tags is not None and include_tags != []:  # noqa: SIM102
+        # check is include tags in in tags of this task, if false then skip this task
+        if check_items_in_2_lists(include_tags, tags) is False:
+            return False
+
+    if exclude_tags is not None and exclude_tags != []:  # noqa: SIM102
+        # check is exclude tags in in tags of this task, if true then skip this task
+        if check_items_in_2_lists(exclude_tags, tags) is True:
+            return False
+
+    return True
+
+
+
+def play_task(task, include_tags=None, exclude_tags=None):
+    """Play a task.
+
+    Args:
+        task: task array
+        include_tags: list of tags to run
+        exclude_tags: list of tags to skip
+
+    Returns:
+        Good: boolean
+    """
+    if task_check_tag(task, include_tags=include_tags, exclude_tags=exclude_tags):
+        print(f"running task: {task.get('name', 'unknown')}")
+    else:
+        print(f"skipping task: {task.get('name', 'unknown')}")
+        return True
+
     if "command" not in task:
         sys.stderr.write(f"missing command entry in task {str(task)}")
         exit(3)
@@ -233,15 +304,20 @@ def play_task(task):
     if task["command"] == "change_timezone":
         return play_command_change_timezone(task)
 
+    if task["command"] == "execute_command":
+        return play_command_execute_command(task)
+
     pprint(task)
     return True
 
 
-def play(commandfile):
+def play(commandfile, include_tags=None, exclude_tags=None):
     """Play commandfile.
 
     Args:
         commandfile: yaml file with instructions
+        include_tags: list of tags to run
+        exclude_tags: list of tags to skip
 
     Returns:
         None
@@ -253,6 +329,6 @@ def play(commandfile):
         exit(2)
 
     for task in data["tasks"]:
-        play_task(task)
+        play_task(task, include_tags=include_tags, exclude_tags=exclude_tags)
 
     return None
