@@ -1,0 +1,44 @@
+---
+tasks:
+  - name: download tvxml file
+    command: execute_command
+    execute: "wget -4 https://download_url_xmltv.xml.gz -O - | gzip -d >/tmp/test.xml && mv -f /tmp/test.xml tv.epg.xml"
+    shell: true
+    tags: update
+  - name: load xmltv file
+    command: loadxml
+    file: tv.epg.xml
+    store: tv
+  - name: analyse_programs
+    title: tv_programs
+    command: analyse_programs
+    store: tv
+  - name: clean up tv
+    command: only_channels
+    store: tv
+    channels:
+      - RTL4.nl
+      - RTL5.nl
+  - name: change timezone
+    command: change_timezone
+    search: " +0000"
+    replace: " +0200"
+    store: tv
+  - name: load xmltv  file
+    command: loadxml
+    file: tv20220924_21.xmltv
+    store: xmltv
+  - name: clean up xmltv
+    command: only_channels
+    store: xmltv
+    channels:
+      - AnimalPlanet.dk
+      - fox9knin.us
+  - name: add xmltv to tv
+    command: add
+    store: tv
+    add_store: xmltv
+  - name: save tv file
+    command: savexml
+    file: /tmp/new_tv.xml
+    store: tv
