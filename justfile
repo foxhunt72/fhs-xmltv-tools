@@ -77,7 +77,7 @@ build:
   fi
 
   # build and add git tab
-  python setup.py sdist && git tag "v${PKG_VERSION}" HEAD
+  python setup.py sdist && git tag "v${PKG_VERSION}" HEAD && git push -u origin --tags
 
 # publish package to pypi (build first)
 publish:
