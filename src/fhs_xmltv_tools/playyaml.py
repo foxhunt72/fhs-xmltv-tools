@@ -248,7 +248,7 @@ def task_check_tag(task, include_tags=None, exclude_tags=None):
     """
     from fhs_xmltv_tools.playyaml_funcs import check_items_in_2_lists
 
-    temp_tags = task.get('tags', [])
+    temp_tags = task.get("tags", [])
     tags = temp_tags if isinstance(temp_tags, list) else [temp_tags]
 
     if include_tags is not None and include_tags != []:  # noqa: SIM102
@@ -262,7 +262,6 @@ def task_check_tag(task, include_tags=None, exclude_tags=None):
             return False
 
     return True
-
 
 
 def play_task(task, include_tags=None, exclude_tags=None):

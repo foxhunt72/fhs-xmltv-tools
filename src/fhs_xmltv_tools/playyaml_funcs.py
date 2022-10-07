@@ -47,8 +47,7 @@ def check_items_in_2_lists(list1, list2):
     Returns:
         bool: minimal one item matched
     """
-    for i in list1:
+    for i in list1:  # noqa:SIM110
         if i in list2:
             return True
     return False
-

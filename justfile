@@ -77,7 +77,14 @@ build:
   fi
 
   # build and add git tab
-  python setup.py sdist && git tag "v${PKG_VERSION}" HEAD && git push -u origin --tags
+  python setup.py sdist || exit 1
+  if ! twine check "$PKG_FILE"; then
+    rm "$PKG_FILE"
+    exit 1
+  fi
+
+  git tag "v${PKG_VERSION}" HEAD && git push -u origin --tags
+
 
 # publish package to pypi (build first)
 publish:
@@ -95,8 +102,10 @@ pytest-failure:
 bumppatch:
   #!/usr/bin/env sh
   bumpversion --allow-dirty --verbose patch
+  vi CHANGELOG.md
 
 # edit README.rst
 readme:
   #!/usr/bin/env sh
   formiko README.rst
+

@@ -13,3 +13,4 @@ fhs-xmltv-tools
 - 0.1.5: add analyse_programs to playyaml
 - 0.1.6: add execute_command tasks types and add tagging options for tags
 - 0.1.7: update documentation
+- 0.1.8: fix flake8 issues

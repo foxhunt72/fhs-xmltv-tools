@@ -2,6 +2,14 @@
 fhs_xmltv_tools
 ===============
 
+Version
+-------
+
+0.1.8
+
+For changes see changelog_
+
+.. _changelog: https://github.com/foxhunt72/fhs-xmltv-tools/blob/main/CHANGELOG.md
 
 Intro
 -----
@@ -331,6 +339,7 @@ write-xmlfile-channels
 Cleanup xmltv file by only writing the channels to a new files that you listed in a file.
 
 .. code-block:: bash
+
  fhs-xmltv-tools write-xmlfile-channels --help                                                                                                           
  Usage: fhs-xmltv-tools write-xmlfile-channels [OPTIONS] CHANNEL_FILE                                      
                                                                                                            
