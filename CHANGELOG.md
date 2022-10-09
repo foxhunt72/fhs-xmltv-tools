@@ -14,3 +14,4 @@ fhs-xmltv-tools
 - 0.1.6: add execute_command tasks types and add tagging options for tags
 - 0.1.7: update documentation
 - 0.1.8: fix flake8 issues
+- 0.1.9: tested and seems beta worthy so gone is alpha state
