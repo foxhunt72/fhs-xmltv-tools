@@ -219,9 +219,7 @@ def play_command_xmltv2sql(task):
         sys.stderr.write(f"missing sqlconnect entry in task {str(task)}")
         exit(3)
     sqlconnect = task.get("sqlconnect")
-    with config.CONSOLE.status(
-        "Save xmltv data to sql...", spinner="dots"
-    ):
+    with config.CONSOLE.status("Save xmltv data to sql...", spinner="dots"):
         save_xmltv_to_sql(config.STORE[store], sqltype, sqlconnect)
     return True
 

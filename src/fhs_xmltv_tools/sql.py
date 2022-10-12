@@ -60,7 +60,6 @@ def sql_create_session(engine_url, engine=None):
     return Session()
 
 
-
 def init_sql(engine_url):
     """Init sql.
 
@@ -73,7 +72,7 @@ def init_sql(engine_url):
     engine = sql_create_engine(engine_url, echo=False)
     if engine is None:
         return None
-    config.SQL['engine'] = engine
+    config.SQL["engine"] = engine
     session = sql_create_session(None, engine=engine)
     if session is None:
         return None
@@ -100,8 +99,8 @@ def init_sql(engine_url):
             """
             return f"Program {self.title} {self.start} {self.channel}"
 
-    config.SQL['session'] = session
+    config.SQL["session"] = session
     Base.metadata.create_all(engine)
-    config.SQL['program'] = Program
+    config.SQL["program"] = Program
 
     return session

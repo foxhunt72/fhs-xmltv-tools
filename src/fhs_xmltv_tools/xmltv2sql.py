@@ -1,4 +1,4 @@
-# xmltv to sql routines
+"""Xmltv to sql routines."""
 
 from . import config
 
@@ -22,15 +22,16 @@ def save_xmltv_to_sql(xmltv_data, sqltype, sqlconnect):
     if init_sql(sqlalchemy_url) is None:
         print(f"ERROR: can't open sql url: {sqlalchemy_url}")
         return False
-    Program = config.SQL['program']
+    Program = config.SQL["program"]
     # save xmltv data to sql
     for p in xmltv_data.programme:
         program = Program(
             channel=p.channel,
-            start=p.start, stop=p.stop,
+            start=p.start,
+            stop=p.stop,
             title=get_program_title(p),
             desc=get_program_desc(p),
-            date=p.date
+            date=p.date,
         )
-        config.SQL['session'].merge(program)
-    config.SQL['session'].commit()
+        config.SQL["session"].merge(program)
+    config.SQL["session"].commit()

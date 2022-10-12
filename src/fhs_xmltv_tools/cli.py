@@ -280,10 +280,12 @@ def xmltv_to_sql(
         ..., help="read xmltv file", envvar="fhs_xmltv_file"
     ),
     sqltype: str = typer.Option(  # noqa: B008
-        "sqlite", help="sqltype for now, (default) sqlite or sqlalchemy",
+        "sqlite",
+        help="sqltype for now, (default) sqlite or sqlalchemy",
     ),
     sqlconnect: str = typer.Option(  # noqa: B008
-        ..., help="sqlconnect how to connect.",
+        ...,
+        help="sqlconnect how to connect.",
     ),
     force_color: bool = typer.Option(  # noqa: B008
         None, "--force-color/--no-color", help="force color in pipelines"
