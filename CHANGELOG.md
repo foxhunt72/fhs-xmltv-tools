@@ -4,7 +4,15 @@ Richard de Vos <rdevos72@gmail.com>
 fhs_xmltv_tools
 fhs-xmltv-tools
 
---------------------------------------------------------------
+Shortlist to come:
+------------------
+- search in sql data
+- add mysql as sql option
+- cleanup sql data (older then date....)
+- cleanup rename channels and channel descriptions
+
+Changes
+-------
 - 0.1.0: initial creation
 - 0.1.1: add basic search options
 - 0.1.2: add join-xml-files
@@ -16,9 +24,3 @@ fhs-xmltv-tools
 - 0.1.8: fix flake8 issues
 - 0.1.9: tested and seems beta worthy so gone is alpha state
 - 0.1.10: add sql save functions in cli and in tasks
-
-Shortlist to come:
-- search in sql data
-- add mysql as sql option
-- cleanup sql data (older then date....)
-- cleanup rename channels and channel descriptions
