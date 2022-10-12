@@ -47,6 +47,10 @@ setup(
     ),
     package_dir={"": "src"},
     install_requires=REQUIREMENTS,
+    extras_require={
+        "sqlite": ["sqlalchemy"],
+        "all": ["sqlalchemy"],
+    },
     classifiers=[
         "Development Status :: 4 - Beta",
         "Programming Language :: Python",

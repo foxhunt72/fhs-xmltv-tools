@@ -14,7 +14,7 @@ tasks:
     command: analyse_programs
     store: tv
   - name: clean up tv
-    command: only_channels
+    command: keep_channels
     store: tv
     channels:
       - RTL4.nl
@@ -29,7 +29,7 @@ tasks:
     file: tv20220924_21.xmltv
     store: xmltv
   - name: clean up xmltv
-    command: only_channels
+    command: keep_channels
     store: xmltv
     channels:
       - AnimalPlanet.dk
@@ -42,3 +42,8 @@ tasks:
     command: savexml
     file: /tmp/new_tv.xml
     store: tv
+  - name: save to sql
+    command: savesql
+    store: tv
+    sqltype: sqlite
+    sqlconnect: /data/xmltv_data.db

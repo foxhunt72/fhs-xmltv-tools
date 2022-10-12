@@ -3,3 +3,4 @@
 LANG = ""
 CONSOLE = None
 STORE = {}
+SQL = {}

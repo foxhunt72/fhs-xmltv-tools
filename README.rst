@@ -5,7 +5,7 @@ fhs_xmltv_tools
 Version
 -------
 
-0.1.9
+0.1.10
 
 For changes see changelog_
 
@@ -25,6 +25,7 @@ You can do the following things with your xmltv file
 - you can join to xmltv files to one
 - change the timezone of a time in the programs
 - search for a program in a xmltv
+- save program data to a sql database
 
 And automate and chain all the staps using a `yaml command`_ task file.
 
@@ -56,6 +57,7 @@ Usage
 - fhs-xmltv-tools `join-xml-files`_ --xmltv-file <xml_file> --xmltv-file-add <xml_file2> --xmltv-out <xmltv_out>
 - fhs-xmltv-tools `search-program`_ --xmltv-file <xml_file> --search <regex to program name to search>
 - fhs-xmltv-tools `write-xmlfile-channels`_ <channel_file> --xmltv-file <xml_file> --xmltv-out <xml_out)>
+- fhs-xmltv-tools `xmltv-to-sql`_ --xmltv-file <xml_file> [--sqltype <sqltype> --sqlconnect <sqlconnect>
 
 And the best option, i think to automate your xml needs
 
@@ -76,11 +78,13 @@ Installation
   cd fhs-xmltv-tools
   pip3 install .
 
-  # And in the future also
-
   pipx install fhs_xmltv_tools
+  pipx install fhs_xmltv_tools[all]
+  phpx install fhs_xmltv_tools[sqlite]
   or
   pip3 install fhs_xmltv_tools
+  pip3 install fhs_xmltv_tools[all]
+  pip3 install fhs_xmltv_tools[sqlite]
 
 Scripts yaml example
 ~~~~~~~~~~~~~~~~~~~~
@@ -116,7 +120,7 @@ Yaml task file.
       command: analyse_programs
       store: tv
     - name: clean up tv
-      command: only_channels
+      command: keep_channels
       store: tv
       channels:
         - RTL4.nl
@@ -143,6 +147,10 @@ Yaml task file.
     - name: save tv file
       command: savexml
       file: /tmp/new_tv.xml
+      store: tv
+    - name: save sql
+      command: savesql
+      sqlconnect: /tmp/new_tv.db
       store: tv
 
 Commands explained
@@ -388,6 +396,37 @@ Usage:
  │    --help                                Show this message and exit.                                                       │
  ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
+
+.. _`xmltv-to-sql`:
+
+save-xmlfile-to-sql
+********************
+
+Write the program data to a sql locaton (like sqlite), that way you can search in programs
+for longer times, the search options will come soon.
+
+.. code-block:: bash
+
+ fhs-xmltv-tools xmltv-to-sql --help                                                                                                           
+ Usage: fhs-xmltv-tools xmltv-to-sql [OPTIONS]
+
+ Xmltv to sql (using sqlalchemy).
+ Args:     force_color: force color in pipeline for example     xmltv_file: xmltv file to use
+ sqltype: sqltype type sqlite or sqlalchemy     sqlconnect: connect string, this is the filepath is
+ using sqltype = sqlite
+
+ ╭─ Options ─────────────────────────────────────────────────────────────────────────────────────────────╮
+ │ *  --xmltv-file                   TEXT  read xmltv file [env var: fhs_xmltv_file] [default: None]     │
+ │                                         [required]                                                    │
+ │    --sqltype                      TEXT  sqltype for now, (default) sqlite or sqlalchemy               │
+ │                                         [default: sqlite]                                             │
+ │ *  --sqlconnect                   TEXT  sqlconnect how to connect. [default: None] [required]         │
+ │    --force-color    --no-color          force color in pipelines [default: no-color]                  │
+ │    --help                               Show this message and exit.                                   │
+ ╰───────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+
+sqlconnect is the file name if using sqlite
 
 You can find a example yaml_ file in the source and also some extra documentation in the examples_ directory.
 

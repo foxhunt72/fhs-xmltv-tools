@@ -201,6 +201,31 @@ def play_command_analyse_programs(task):
     return True
 
 
+def play_command_xmltv2sql(task):
+    """Save xmltv data to sql.
+
+    Args:
+        task: task array
+
+    Returns:
+        Good: boolean
+    """
+    from .xmltv2sql import save_xmltv_to_sql
+
+    check_console()
+    store = task.get("store", "default")
+    sqltype = task.get("sqltype", "sqlite")
+    if "sqlconnect" not in task:
+        sys.stderr.write(f"missing sqlconnect entry in task {str(task)}")
+        exit(3)
+    sqlconnect = task.get("sqlconnect")
+    with config.CONSOLE.status(
+        "Save xmltv data to sql...", spinner="dots"
+    ):
+        save_xmltv_to_sql(config.STORE[store], sqltype, sqlconnect)
+    return True
+
+
 def play_command_execute_command(task):
     """Execute a program.
 
@@ -291,7 +316,7 @@ def play_task(task, include_tags=None, exclude_tags=None):
     if task["command"] == "loadxml":
         return play_command_loadxml(task)
 
-    if task["command"] == "only_channels":
+    if task["command"] == "only_channels" or task["command"] == "keep_channels":
         return play_command_only_channels(task)
 
     if task["command"] == "savexml":
@@ -305,6 +330,9 @@ def play_task(task, include_tags=None, exclude_tags=None):
 
     if task["command"] == "execute_command":
         return play_command_execute_command(task)
+
+    if task["command"] == "xmltv2sql" or task["command"] == "savesql":
+        return play_command_xmltv2sql(task)
 
     pprint(task)
     return True

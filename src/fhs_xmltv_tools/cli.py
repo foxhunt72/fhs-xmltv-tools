@@ -274,5 +274,42 @@ def run_tasks(
     play(yaml_command, include_tag, exclude_tag)
 
 
+@main.command()
+def xmltv_to_sql(
+    xmltv_file: str = typer.Option(  # noqa: B008
+        ..., help="read xmltv file", envvar="fhs_xmltv_file"
+    ),
+    sqltype: str = typer.Option(  # noqa: B008
+        "sqlite", help="sqltype for now, (default) sqlite or sqlalchemy",
+    ),
+    sqlconnect: str = typer.Option(  # noqa: B008
+        ..., help="sqlconnect how to connect.",
+    ),
+    force_color: bool = typer.Option(  # noqa: B008
+        None, "--force-color/--no-color", help="force color in pipelines"
+    ),
+):
+    """Xmltv to sql (using sqlalchemy).
+
+    Args:
+        force_color: force color in pipeline for example
+        xmltv_file: xmltv file to use
+        sqltype: sqltype type sqlite or sqlalchemy
+        sqlconnect: connect string, this is the filepath is using sqltype = sqlite
+
+    """
+    from rich.console import Console
+    from .xmltv2sql import save_xmltv_to_sql
+
+    console = Console(force_terminal=force_color)
+    from .xmltv_load_save import xmltv_load
+
+    with console.status("Loading...", spinner="dots"):
+        data = xmltv_load(xmltv_file)
+
+    with console.status("Exporting to sql...", spinner="dots"):
+        save_xmltv_to_sql(data, sqltype, sqlconnect)
+
+
 if __name__ == "__main__":
     sys.exit(main())  # pragma: no cover

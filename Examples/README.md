@@ -36,7 +36,7 @@ The command is the command that you want to run, the following options are posib
   - Execute a shell command, use shell: true if you want to chain multiple commands with a pipe command.
 - analyse_programs
   - Analyse a loaded xmltv file, use store to choice which memory place to use.
-- only_channels
+- keep_channels
   - Keep only the named channels
 - change_timezone
   - Change the timezone in the program data, this is more a search and replace on the start and stop time.
@@ -44,6 +44,8 @@ The command is the command that you want to run, the following options are posib
   - add a xml store to another store
 - savexml
   - save a xml store back to disk.
+- savesql
+  - save a xml store data to sql (for now sqlite only)
 
 
 # More examples
@@ -104,10 +106,10 @@ The command is the command that you want to run, the following options are posib
 - title: <title for output, just makes it nicer if you have multiple xmltv to output>
 - store: memory store to use (offcourse first load a xmltv with the loadxml command)
 
-## only_channels
+## keep_channels
 
 Delete every channels that isn't mentioned
-Maybe i am going to rename this to keep_channels
+Alias for only_channels 
 
 ```
  - name: clean up tv
@@ -170,3 +172,24 @@ See the example task file in this directory.
 - command: savexml
 - file: file to save xml to
 - store: memory store to save to disk
+
+
+## savesql
+
+```
+ - name: save xmltv data to sql
+   command: savesql
+   sqlconnect: /data/sqlite.db
+   sqltype: sqlite
+   store: tv
+```
+
+- name: description
+- command: savesql
+- store: memory store to save to sql
+- sqltype: type of sqldata base for now 'sqlite' or 'sqlalchemy'
+- sqlconnect: connect string for sql,
+    - if sqltype is 'sqlite' then this is a file path
+    - if sqltype is 'sqlalchemy' then this is a sqlalchemy engine url
+      please make sure that the right python packages for your database are installed 
+
