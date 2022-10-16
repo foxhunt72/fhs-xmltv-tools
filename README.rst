@@ -25,6 +25,7 @@ You can do the following things with your xmltv file
 - you can join to xmltv files to one
 - change the timezone of a time in the programs
 - search for a program in a xmltv
+- search for a program in sql
 - save program data to a sql database
 
 And automate and chain all the staps using a `yaml command`_ task file.
@@ -58,6 +59,7 @@ Usage
 - fhs-xmltv-tools `search-program`_ --xmltv-file <xml_file> --search <regex to program name to search>
 - fhs-xmltv-tools `write-xmlfile-channels`_ <channel_file> --xmltv-file <xml_file> --xmltv-out <xml_out)>
 - fhs-xmltv-tools `xmltv-to-sql`_ --xmltv-file <xml_file> [--sqltype <sqltype> --sqlconnect <sqlconnect>
+- fhs-xmltv-tools `search-program-sql`_  [--sqltype <sqltype> --sqlconnect <sqlconnect> --search <regex to program name to search>
 
 And the best option, i think to automate your xml needs
 
@@ -427,6 +429,14 @@ for longer times, the search options will come soon.
 
 
 sqlconnect is the file name if using sqlite
+
+.. _`search-program-sql`:
+
+search-program-sql
+******************
+
+Search a program in a sql datebase.
+
 
 You can find a example yaml_ file in the source and also some extra documentation in the examples_ directory.
 
