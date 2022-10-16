@@ -313,5 +313,51 @@ def xmltv_to_sql(
         save_xmltv_to_sql(data, sqltype, sqlconnect)
 
 
+@main.command()
+def search_program_sql(
+    search: str = typer.Option(..., help="regex search"),  # noqa: B008
+    sqltype: str = typer.Option(  # noqa: B008
+        "sqlite",
+        help="sqltype for now, (default) sqlite or sqlalchemy",
+    ),
+    sqlconnect: str = typer.Option(  # noqa: B008
+        ...,
+        help="sqlconnect how to connect.",
+    ),
+    force_color: bool = typer.Option(  # noqa: B008
+        None, "--force-color/--no-color", help="force color in pipelines"
+    ),
+    force_case: bool = typer.Option(False, "--force-case-sensitive"),  # noqa: B008
+):
+    """Search program in sql saved data.
+
+    Args:
+        search: string or regex to search
+        force_color: force color in pipeline for example
+        force_case: normal search is case insensitive but with this option force case sensitive
+        sqltype: sqltype type sqlite or sqlalchemy
+        sqlconnect: connect string, this is the filepath is using sqltype = sqlite
+
+    """
+    from rich.console import Console
+    from rich.table import Table
+    from .xmltv2sql import search_programs_sql
+
+    console = Console(force_terminal=force_color)
+
+    with console.status("Searching...", spinner="dots"):
+        result = search_programs_sql(sqltype, sqlconnect, search, force_case=force_case)
+
+    table = Table(title="Programs")
+    table.add_column("Channel", style="cyan")
+    table.add_column("start time", style="green")
+    table.add_column("end time", style="cyan")
+    table.add_column("Name", style="green")
+    table.add_column("Description", style="cyan")
+    for p in result:
+        table.add_row(p["channel"], p["start"], p["stop"], p["title"], p["description"])
+    console.print(table)
+
+
 if __name__ == "__main__":
     sys.exit(main())  # pragma: no cover

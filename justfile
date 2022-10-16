@@ -9,14 +9,14 @@ default:
 setuptest directory="/tmp/venv":
   #!/usr/bin/env sh
   python -m venv "{{directory}}"
-  "{{directory}}/bin/pip3" install -e .
+  "{{directory}}/bin/pip3" install -e ".[all]"
   echo "use: source {{directory}}/bin/active to test with python"
 
 
 setuptest-dev directory="/tmp/venv":
   #!/usr/bin/env sh
   python -m venv "{{directory}}"
-  "{{directory}}/bin/pip3" install -e .
+  "{{directory}}/bin/pip3" install -e ".[all]"
   "{{directory}}/bin/pip3" install -r requirements-dev.txt
   "{{directory}}/bin/pip3" install -r requirements-flake8.txt
   echo "use: source {{directory}}/bin/active to test with python"
