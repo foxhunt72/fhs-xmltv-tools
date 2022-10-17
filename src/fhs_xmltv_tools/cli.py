@@ -4,9 +4,10 @@ from pprint import pprint
 from typing import List, Optional
 
 from fhs_xmltv_tools import config  # noqa: F401
-from .__version__ import __version__, __project_name__
 
 import typer
+
+from .__version__ import __project_name__, __version__
 
 print(f"{__project_name__}: {__version__}")
 main = typer.Typer(pretty_exceptions_show_locals=False)
