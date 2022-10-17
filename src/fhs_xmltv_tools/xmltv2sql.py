@@ -89,3 +89,37 @@ def search_programs_sql(sqltype, sqlconnect, search_str, force_case=False):
     ):
         result.append(search_program_create_program_return(p))
     return result
+
+
+def delete_sql(sqltype, sqlconnect, days):
+    """Delete sql entries older than days.
+
+    Args:
+        sqltype: type of connection for example sqlite
+        sqlconnect: connect for sql, for example for sqlite, this is the db file inclusief path
+        days: integer days to keep
+
+    Returns:
+        Result
+    """
+    from .sql import init_sql, create_engine_url
+    from datetime import datetime, timedelta
+
+    sqlalchemy_url = create_engine_url(sqltype, sqlconnect)
+
+    if init_sql(sqlalchemy_url) is None:
+        print(f"ERROR: can't open sql url: {sqlalchemy_url}")
+        exit(1)
+
+    session = config.SQL["session"]
+    Program = config.SQL["program"]
+
+    past_date = datetime.now() + timedelta(days=-days)
+    past_date_str = past_date.strftime("%Y%m%d")
+
+    print(f"cleaning (deleting) all entries before {past_date:%Y-%m-%d}")
+
+    my_query = session.query(Program).filter(Program.start < past_date_str)
+    my_query.delete()
+    session.commit()
+    return True

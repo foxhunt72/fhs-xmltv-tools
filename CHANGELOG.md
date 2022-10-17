@@ -7,7 +7,6 @@ fhs-xmltv-tools
 Shortlist to come:
 ------------------
 - add mysql as sql option
-- cleanup sql data (older then date....)
 - cleanup rename channels and channel descriptions
 
 Changes
@@ -24,3 +23,4 @@ Changes
 - 0.1.9: tested and seems beta worthy so gone is alpha state
 - 0.1.10: add sql save functions in cli and in tasks
 - 0.1.11: search in sql data
+- 0.1.12: cleanup sql data (older then xx days....)

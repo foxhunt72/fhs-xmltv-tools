@@ -193,3 +193,23 @@ See the example task file in this directory.
     - if sqltype is 'sqlalchemy' then this is a sqlalchemy engine url
       please make sure that the right python packages for your database are installed 
 
+
+## clean_sql
+
+```
+ - name: clean program data from sql
+   command: clean_sql
+   sqlconnect: /data/sqlite.db
+   sqltype: sqlite
+   days: 180
+```
+
+- name: description
+- command: clean_sql
+- sqltype: type of sqldata base for now 'sqlite' or 'sqlalchemy'
+- sqlconnect: connect string for sql,
+    - if sqltype is 'sqlite' then this is a file path
+    - if sqltype is 'sqlalchemy' then this is a sqlalchemy engine url
+      please make sure that the right python packages for your database are installed 
+- days: days to keep of program data, (default 90 days)
+

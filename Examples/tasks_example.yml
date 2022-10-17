@@ -47,3 +47,8 @@ tasks:
     store: tv
     sqltype: sqlite
     sqlconnect: /data/xmltv_data.db
+  - name: clean_sql
+    command: clean_sql
+    sqltype: sqlite
+    sqlconnect: /data/xmltv_data.db
+    days: 180

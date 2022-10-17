@@ -4,9 +4,11 @@ from pprint import pprint
 from typing import List, Optional
 
 from fhs_xmltv_tools import config  # noqa: F401
+from .__version__ import __version__, __project_name__
 
 import typer
 
+print(f"{__project_name__}: {__version__}")
 main = typer.Typer(pretty_exceptions_show_locals=False)
 
 
@@ -357,6 +359,31 @@ def search_program_sql(
     for p in result:
         table.add_row(p["channel"], p["start"], p["stop"], p["title"], p["description"])
     console.print(table)
+
+
+@main.command()
+def clean_sql(
+    days: int = 90,
+    sqltype: str = typer.Option(  # noqa: B008
+        "sqlite",
+        help="sqltype for now, (default) sqlite or sqlalchemy",
+    ),
+    sqlconnect: str = typer.Option(  # noqa: B008
+        ...,
+        help="sqlconnect how to connect.",
+    ),
+):
+    """Clean program data from sql.
+
+    Args:
+        days: integer amount of days to keep (older program data is removed)
+        sqltype: sqltype type sqlite or sqlalchemy
+        sqlconnect: connect string, this is the filepath is using sqltype = sqlite
+
+    """
+    from .xmltv2sql import delete_sql
+
+    delete_sql(sqltype, sqlconnect, days)
 
 
 if __name__ == "__main__":

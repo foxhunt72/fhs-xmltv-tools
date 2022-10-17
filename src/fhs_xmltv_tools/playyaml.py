@@ -224,6 +224,29 @@ def play_command_xmltv2sql(task):
     return True
 
 
+def play_command_clean_sql(task):
+    """Save xmltv data to sql.
+
+    Args:
+        task: task array
+
+    Returns:
+        Good: boolean
+    """
+    from .xmltv2sql import delete_sql
+
+    check_console()
+    days = task.get("days", 90)
+    sqltype = task.get("sqltype", "sqlite")
+    if "sqlconnect" not in task:
+        sys.stderr.write(f"missing sqlconnect entry in task {str(task)}")
+        exit(3)
+    sqlconnect = task.get("sqlconnect")
+    with config.CONSOLE.status("Save xmltv data to sql...", spinner="dots"):
+        delete_sql(sqltype, sqlconnect, days)
+    return True
+
+
 def play_command_execute_command(task):
     """Execute a program.
 
@@ -331,6 +354,9 @@ def play_task(task, include_tags=None, exclude_tags=None):
 
     if task["command"] == "xmltv2sql" or task["command"] == "savesql":
         return play_command_xmltv2sql(task)
+
+    if task["command"] == "clean_sql":
+        return play_command_clean_sql(task)
 
     pprint(task)
     return True
