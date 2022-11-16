@@ -5,11 +5,11 @@ version: 0.5.1
 
 import os
 import sys
+from pprint import pprint
 
 import yaml
 
 from . import config
-from pprint import pprint
 
 
 def check_console():
@@ -64,25 +64,27 @@ def check_arguments_in_task(task, command_dict):
     Returns:
         Boolean arguments correct
     """
-    if 'args' not in command_dict:
+    if "args" not in command_dict:
         # no arguments needed for this functions
         return True
-    for arg in command_dict['args']:
+    for arg in command_dict["args"]:
         argname = arg.get("name", "unknown_name")
         arghelp = arg.get("help", None)
         argdefault = arg.get("default", None)
         argtype = arg.get("type", "string")
         if argname in task:
-            if argtype == 'boolean':
+            if argtype == "boolean":
                 task[argname] = task[argname].lower() == "true"
             continue
         if argdefault is not None:
             task[argname] = argdefault
-            if argtype == 'boolean':
+            if argtype == "boolean":
                 task[argname] = task[argname].lower() == "true"
             continue
         # so if here we are missing a argname without a default so mandatoy
-        sys.stderr.write(f"ERROR: missing argument {argname} for {arghelp or '<No Help>'} in {str(task)}")
+        sys.stderr.write(
+            f"ERROR: missing argument {argname} for {arghelp or '<No Help>'} in {str(task)}"
+        )
         return False
     return True
 
@@ -114,7 +116,9 @@ def task_check_tag(task, include_tags=None, exclude_tags=None):
     return True
 
 
-def loop_play_task(command_dict, task, *, include_tags=None, exclude_tags=None, funcdict):
+def loop_play_task(
+    command_dict, task, *, include_tags=None, exclude_tags=None, funcdict
+):
     """Handle a task that can loop.
 
     Args:
@@ -127,7 +131,7 @@ def loop_play_task(command_dict, task, *, include_tags=None, exclude_tags=None, 
     Returns:
         Good: boolean
     """
-    loop = command_dict.get('loop', None)
+    loop = command_dict.get("loop", None)
     if type(task[loop]) != list:
         print(f"loop variable {loop} in task but not a list.")
         exit(1)
@@ -136,7 +140,12 @@ def loop_play_task(command_dict, task, *, include_tags=None, exclude_tags=None, 
         del new_task[loop]
         for p in i:
             new_task[p] = i[p]
-        play_task(new_task, include_tags=include_tags, exclude_tags=exclude_tags, funcdict=funcdict)
+        play_task(
+            new_task,
+            include_tags=include_tags,
+            exclude_tags=exclude_tags,
+            funcdict=funcdict,
+        )
     return True
 
 
@@ -150,6 +159,7 @@ def play_loop(task):
         Good: boolean
     """
     import copy
+
     with_items = task["with_items"]
     funcdict = task["funcdict"]
     for i in with_items:
@@ -178,7 +188,7 @@ def play_task(task, *, include_tags=None, exclude_tags=None, funcdict):
         Good: boolean
     """
     check_console()
-    task_name = task.get('name', task.get('command', 'unknown'))
+    task_name = task.get("name", task.get("command", "unknown"))
     if task_check_tag(task, include_tags=include_tags, exclude_tags=exclude_tags):
         print(f"running task: {task_name}")
     else:
@@ -198,17 +208,23 @@ def play_task(task, *, include_tags=None, exclude_tags=None, funcdict):
         pprint(task)
         return True
 
-    loop = command_dict.get('loop', None)
+    loop = command_dict.get("loop", None)
     if loop is not None and loop in task:
-        loop_play_task(command_dict, task, include_tags=include_tags, exclude_tags=exclude_tags, funcdict=funcdict)
+        loop_play_task(
+            command_dict,
+            task,
+            include_tags=include_tags,
+            exclude_tags=exclude_tags,
+            funcdict=funcdict,
+        )
         return True
 
     if check_arguments_in_task(task, command_dict) is False:
         print("missing arguments in task.")
         exit(1)
 
-    if 'func' in command_dict:
-        command_dict['func'](task)
+    if "func" in command_dict:
+        command_dict["func"](task)
     return True
 
 
@@ -232,7 +248,12 @@ def play(commandfile, *, include_tags=None, exclude_tags=None, funcdict):
         exit(2)
 
     for task in data["tasks"]:
-        play_task(task, include_tags=include_tags, exclude_tags=exclude_tags, funcdict=funcdict)
+        play_task(
+            task,
+            include_tags=include_tags,
+            exclude_tags=exclude_tags,
+            funcdict=funcdict,
+        )
 
     return None
 
@@ -250,16 +271,16 @@ def func_dict_parse(funcdict, for_type=None):
     new_funcdict = dict()
     for p in funcdict:
         cur_func = funcdict[p]
-        if cur_func.get('hidden', False) is True:
+        if cur_func.get("hidden", False) is True:
             continue
-        if for_type == 'interactive' and cur_func.get('interactive_hidden', False) is True:
+        if (
+            for_type == "interactive"
+            and cur_func.get("interactive_hidden", False) is True
+        ):
             continue
         new_funcdict[p] = cur_func
-    new_funcdict['loop'] = {
-        "args": [
-            {"name": "with_items"},
-            {"name": "tasks"}
-        ],
+    new_funcdict["loop"] = {
+        "args": [{"name": "with_items"}, {"name": "tasks"}],
         "func": play_loop,
         "help": "loop over multiple tasks",
     }
