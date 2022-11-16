@@ -386,6 +386,13 @@ def clean_sql(
 
     delete_sql(sqltype, sqlconnect, days)
 
+@main.command()
+def interactive():
+    """Run tasks interactive.
+    """
+    from .playyaml import interactive_run_cmd2
+
+    interactive_run_cmd2()
 
 if __name__ == "__main__":
     sys.exit(main())  # pragma: no cover

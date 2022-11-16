@@ -1,6 +1,7 @@
 """xmltv_channels script for fhs_xmltv_tools."""
 
 from . import config  # noqa: F401
+from xmltv.models.xmltv import DisplayName
 
 
 def get_channel_by_channel_id(xmltv_data, channel_id):
@@ -17,6 +18,22 @@ def get_channel_by_channel_id(xmltv_data, channel_id):
         if my_channel.id == channel_id:
             return my_channel
     return None
+
+
+def get_channel_index_by_channel_id(xmltv_data, channel_id):
+    """Get channel index from channel list with channel_id.
+
+    Args:
+        xmltv_data: data object with xmltv data.
+        channel_id: channel id we want to search.
+
+    Returns:
+        channel_index
+    """
+    for (i, my_channel) in enumerate(xmltv_data.channel):
+        if my_channel.id == channel_id:
+            return i
+    return -1
 
 
 def channels_remove_all_channels_not_in_list(xmltv_data, channel_set):
@@ -47,4 +64,86 @@ def join_channels(xmltv_data, xmltv_data_add):
     """
     for p in xmltv_data_add.channel:
         xmltv_data.channel.append(p)
+    return xmltv_data
+
+
+def return_list(var_input):
+    """Return a list a var as var is not a list.
+
+    Args:
+        var_input: variable input
+
+    Returns:
+        list
+    """
+    if type(var_input) != list():
+        return [var_input]
+    else:
+        return var_input
+
+
+def return_channel_displayname(p):
+    """Return display info.
+
+    Args:
+        p: input from yaml
+
+    Returns:
+        displayname
+    """
+    if type(p) == str():
+        return DisplayName(content=p, lang=None)
+    if type(p) == dict():
+        for q in p:
+            return DisplayName(content=p[q], lang=q)
+    return DisplayName(content=f"unknown {str(p)}")
+
+
+def rename_channel(xmltv_data, channel):
+    """Rename channel base on channel struct.
+
+    Args:
+        xmltv_data: data object with xmltv data.
+        channel: channel struct
+
+    Returns:
+        xmltv_data
+    """
+    if type(channel) != dict:
+        print('channel needs to by of type dict not {str(channel)}.')
+        return xmltv_data
+
+    for q in channel:
+        channel_index = get_channel_index_by_channel_id(xmltv_data, q)
+        if channel_index == -1:
+            print('channel with id {q}, not found, skipping')
+            continue
+        print(f"{q=}  {channel_index=}")
+        if 'new_id' in channel[q]:
+            xmltv_data.channel[channel_index].id = channel[q]['new_id']
+        # check displayname
+        if 'displayname' in channel[q]:
+            displayname = return_list(channel[q]['displayname'])
+            xmltv_data.channel[channel_index].display_name = []
+            for p in displayname:
+                xmltv_data.channel[channel_index].display_name.append(return_channel_displayname(p))
+        # check icon
+        # check url
+
+    return xmltv_data
+
+
+def rename_channels(xmltv_data, channels):
+    """Rename channels base on channels struct.
+
+    Args:
+        xmltv_data: data object with xmltv data.
+        channels: channels struct
+
+    Returns:
+        xmltv_data
+    """
+    for channel in channels:
+        xmltv_data = rename_channel(xmltv_data, channel)
+
     return xmltv_data

@@ -5,7 +5,7 @@ fhs_xmltv_tools
 Version
 -------
 
-0.1.12
+0.1.13
 
 For changes see changelog_
 
@@ -28,11 +28,13 @@ You can do the following things with your xmltv file
 - search for a program in sql
 - save program data to a sql database
 
+I also created a program to handle m3u8 files with iptv channels, see iptv_ or pipiptv_
+
 And automate and chain all the staps using a `yaml command`_ task file.
 
 But the tool is getting more advanced every day, so use it, you can find the source_ on github.
 
-See pypi: https://pypi.org/project/fhs-xmltv-tools/ or github https://
+See pypi: https://pypi.org/project/fhs-xmltv-tools/ or github https://github.com/foxhunt72/fhx-xmltv-tools
 
 Clean up xmltv files, with only the channels you want and even join multiple together,
 also easy if you need to change timezone from one of the files.
@@ -40,18 +42,19 @@ also easy if you need to change timezone from one of the files.
 You can use this with every program that needs some xmltv file, like tvheadend_, kodi_, nextpvr_ etc.
 
 
-
-
 .. _xmltv: http://wiki.xmltv.org
 .. _tvheadend: https://tvheadend.org
 .. _kodi: https://kodi.tv
 .. _nextpvr: https://www.nextpvr.com
 .. _source: https://github.com/foxhunt72/fhs-xmltv-tools
+.. _iptv: https://github.com/foxhunt72/fhs-iptv-tools
+.. _pipiptv: https://pypi.org/project/fhs-iptv-tools
 
 
 Usage
 -----
 
+- fhs-xmltv-tools interactive
 - fhs-xmltv-tools `analyse-programs`_ --xmltv-file <xml_file>
 - fhs-xmltv-tools `list-channels`_ --xmltv-file <xml_file
 - fhs-xmltv-tools `channel-details`_ --xmltv-file <xml_file> [--channel-id <channel_id>] [--index <index>]

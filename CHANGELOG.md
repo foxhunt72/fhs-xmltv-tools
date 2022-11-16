@@ -24,3 +24,4 @@ Changes
 - 0.1.10: add sql save functions in cli and in tasks
 - 0.1.11: search in sql data
 - 0.1.12: cleanup sql data (older then xx days....)
+- 0.1.13: add interactive mode

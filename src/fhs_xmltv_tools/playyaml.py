@@ -7,6 +7,7 @@ from pprint import pprint
 import yaml
 
 from . import config
+from .playyaml_lib import func_dict_parse, play as play_lib
 
 
 def check_console():
@@ -310,56 +311,86 @@ def task_check_tag(task, include_tags=None, exclude_tags=None):
     return True
 
 
-def play_task(task, include_tags=None, exclude_tags=None):
-    """Play a task.
-
-    Args:
-        task: task array
-        include_tags: list of tags to run
-        exclude_tags: list of tags to skip
-
-    Returns:
-        Good: boolean
-    """
-    if task_check_tag(task, include_tags=include_tags, exclude_tags=exclude_tags):
-        print(f"running task: {task.get('name', 'unknown')}")
-    else:
-        print(f"skipping task: {task.get('name', 'unknown')}")
-        return True
-
-    if "command" not in task:
-        sys.stderr.write(f"missing command entry in task {str(task)}")
-        exit(3)
-
-    if task["command"] == "analyse_programs":
-        return play_command_analyse_programs(task)
-
-    if task["command"] == "loadxml":
-        return play_command_loadxml(task)
-
-    if task["command"] == "only_channels" or task["command"] == "keep_channels":
-        return play_command_only_channels(task)
-
-    if task["command"] == "savexml":
-        return play_command_savexml(task)
-
-    if task["command"] == "add":
-        return play_command_add(task)
-
-    if task["command"] == "change_timezone":
-        return play_command_change_timezone(task)
-
-    if task["command"] == "execute_command":
-        return play_command_execute_command(task)
-
-    if task["command"] == "xmltv2sql" or task["command"] == "savesql":
-        return play_command_xmltv2sql(task)
-
-    if task["command"] == "clean_sql":
-        return play_command_clean_sql(task)
-
-    pprint(task)
-    return True
+funcdict = {
+    "analyse_programs": {
+        "args": [
+            {"name": "store", "help": "store name", "default": "default"},
+            {"name": "title", "help": "title name", "default": ""}
+        ],
+        "func": play_command_analyse_programs,
+        "help": "analyse programs"
+    },
+    "loadxml": {
+        "args": [
+            {"name": "store", "help": "store name", "default": "default"},
+            {"name": "file", "help": "file name to load"}
+        ],
+        "func": play_command_loadxml,
+        "help": "loadxml"
+    },
+    "keep_channels": {
+        "args": [
+            {"name": "store", "help": "store name", "default": "default"},
+            {"name": "channels", "help": "channels to keep"}
+        ],
+        "func": play_command_only_channels,
+        "alias": ['only_channels'],
+        "help": "keep only channels"
+    },
+    "savexml": {
+        "args": [
+            {"name": "store", "help": "store name", "default": "default"},
+            {"name": "file", "help": "file name to load"}
+        ],
+        "func": play_command_savexml,
+        "help": "savexml"
+    },
+    "add": {
+        "args": [
+            {"name": "store", "help": "store name", "default": "default"},
+            {"name": "add_store", "help": "add store name"}
+        ],
+        "func": play_command_add,
+        "help": "add"
+    },
+    "change_timezone": {
+        "args": [
+            {"name": "store", "help": "store name", "default": "default"},
+            {"name": "search", "help": "search entry"},
+            {"name": "replace", "help": "replace entry"}
+        ],
+        "func": play_command_change_timezone,
+        "help": "change_timezone"
+    },
+    "execute_command": {
+        "args": [
+            {"name": "execute", "help": "execute command", "default": ""},
+            {"name": "execute_base64", "help": "execute command base64", "default": ""},
+            {"name": "shell", "help": "use shell", "default": "false", "type": "boolean"},
+            {"name": "capture_output", "help": "capture output", "default": "true", "type": "boolean"},
+        ],
+        "func": play_command_execute_command,
+        "help": "execute command"
+    },
+    "xmltv2sql": {
+        "args": [
+            {"name": "store", "help": "store name", "default": "default"},
+            {"name": "sqltype", "help": "sqltype: sqlite", "default": "sqlite"},
+            {"name": "sqlconnect", "help": "sqlconnect string"}
+        ],
+        "func": play_command_xmltv2sql,
+        "alias": "savesql",
+        "help": "xmltv2sql / savesql"
+    },
+    "clean_sql": {
+        "args": [
+            {"name": "sqltype", "help": "sqltype: sqlite", "default": "sqlite"},
+            {"name": "sqlconnect", "help": "sqlconnect string"}
+        ],
+        "func": play_command_clean_sql,
+        "help": "clean sql"
+    }
+}
 
 
 def play(commandfile, include_tags=None, exclude_tags=None):
@@ -373,13 +404,14 @@ def play(commandfile, include_tags=None, exclude_tags=None):
     Returns:
         None
     """
-    data = load_yaml(commandfile)
-
-    if "tasks" not in data:
-        sys.stderr.write("missing tasks entrie in yaml file")
-        exit(2)
-
-    for task in data["tasks"]:
-        play_task(task, include_tags=include_tags, exclude_tags=exclude_tags)
+    play_lib(commandfile, include_tags=include_tags, exclude_tags=exclude_tags, funcdict=func_dict_parse(funcdict))
 
     return None
+
+def interactive_run_cmd2():
+    """Play interactive
+
+    """
+    from .interactive_cmd2 import run_cmd2
+
+    run_cmd2(funcdict=func_dict_parse(funcdict, for_type="interactive"))
