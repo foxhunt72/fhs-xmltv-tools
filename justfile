@@ -92,7 +92,7 @@ publish:
   export PKG_NAME="$(python setup.py --name)"
   export PKG_VERSION="$(python setup.py --version)"
   export PKG_FILE="dist/${PKG_NAME}-${PKG_VERSION}.tar.gz"
-  twine upload -r pypi "$PKG_FILE" && gh release create "v${PKG_VERSION}" "$PKG_FILE" -F CHANGELOG.md
+  twine upload -r pypi "$PKG_FILE" && gh release create "v${PKG_VERSION}" "$PKG_FILE" -F CHANGELOG.md && tweet-fhs-xmltv-tools.sh "$PKG_VERSION"
   # twine upload dist/*
 
 pytest-failure:
