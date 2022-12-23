@@ -1,6 +1,7 @@
-"""xmltv_channels script for fhs_xmltv_tools."""
+"testtest""xmltv_channels script for fhs_xmltv_tools."""
 
 from . import config  # noqa: F401
+from .xmltv_programs import search_and_replace_channel_id
 from xmltv.models.xmltv import DisplayName
 
 
@@ -52,7 +53,7 @@ def channels_remove_all_channels_not_in_list(xmltv_data, channel_set):
     return xmltv_data
 
 
-def join_channels(xmltv_data, xmltv_data_add):
+def join_channels(xmltv_data, xmltv_data_add, only_channels=None):
     """Add the channels from xmltv_data_add to the channels from xmtv_data.
 
     Args:
@@ -63,6 +64,9 @@ def join_channels(xmltv_data, xmltv_data_add):
         xmltv_data
     """
     for p in xmltv_data_add.channel:
+        if only_channels is not None:
+            if p.id not in only_channels:
+                continue
         xmltv_data.channel.append(p)
     return xmltv_data
 
@@ -114,22 +118,25 @@ def rename_channel(xmltv_data, channel):
         return xmltv_data
 
     for q in channel:
-        channel_index = get_channel_index_by_channel_id(xmltv_data, q)
-        if channel_index == -1:
-            print('channel with id {q}, not found, skipping')
-            continue
-        print(f"{q=}  {channel_index=}")
-        if 'new_id' in channel[q]:
-            xmltv_data.channel[channel_index].id = channel[q]['new_id']
-        # check displayname
-        if 'displayname' in channel[q]:
-            displayname = return_list(channel[q]['displayname'])
-            xmltv_data.channel[channel_index].display_name = []
-            for p in displayname:
-                xmltv_data.channel[channel_index].display_name.append(return_channel_displayname(p))
+        nothing_found = True
+        while (channel_index := get_channel_index_by_channel_id(xmltv_data, q)) != -1:
+            nothing_found = False
+            print(f"{q=}  {channel_index=}")
+            if 'new_id' in channel[q]:
+                search_and_replace_channel_id(xmltv_data, q, channel[q]['new_id'])
+                xmltv_data.channel[channel_index].id = channel[q]['new_id']
+            # check displayname
+            if 'displayname' in channel[q]:
+                displayname = return_list(channel[q]['displayname'])
+                xmltv_data.channel[channel_index].display_name = []
+                for p in displayname:
+                    xmltv_data.channel[channel_index].display_name.append(return_channel_displayname(p))
+            if channel[q].get('only_one', False) is True:
+                break
+        if nothing_found is True:
+            print(f'channel with id {q}, not found, skipping')
         # check icon
         # check url
-
     return xmltv_data
 
 

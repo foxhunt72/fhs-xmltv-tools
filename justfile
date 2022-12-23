@@ -9,6 +9,7 @@ default:
 setuptest directory="/tmp/venv":
   #!/usr/bin/env sh
   python -m venv "{{directory}}"
+  "{{directory}}/bin/python" -m pip install --upgrade pip
   "{{directory}}/bin/pip3" install -e ".[all]"
   echo "use: source {{directory}}/bin/active to test with python"
 
@@ -16,9 +17,11 @@ setuptest directory="/tmp/venv":
 setuptest-dev directory="/tmp/venv":
   #!/usr/bin/env sh
   python -m venv "{{directory}}"
+  "{{directory}}/bin/python" -m pip install --upgrade pip
   "{{directory}}/bin/pip3" install -e ".[all]"
   "{{directory}}/bin/pip3" install -r requirements-dev.txt
-  "{{directory}}/bin/pip3" install -r requirements-flake8.txt
+  # "{{directory}}/bin/pip3" install -r requirements-flake8.txt
+  cat requirements-flake8.txt| tr -s "\n" | xargs -n 1 -d "\n" {{directory}}/bin/pip3 install
   echo "use: source {{directory}}/bin/active to test with python"
 
 githook-tox:
@@ -108,4 +111,9 @@ bumppatch:
 readme:
   #!/usr/bin/env sh
   formiko README.rst
+
+# show git changes
+git_diff:
+  #!/usr/bin/env sh
+  git diff | dunk | less -R
 

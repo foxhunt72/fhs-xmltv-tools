@@ -177,7 +177,7 @@ def programme_remove_all_channels_not_in_list(xmltv_data, channel_set):
     return xmltv_data
 
 
-def join_programs(xmltv_data, xmltv_data_add):
+def join_programs(xmltv_data, xmltv_data_add, only_channels=None):
     """Add the programs from xmltv_data_add to the channels from xmtv_data.
 
     Args:
@@ -188,6 +188,9 @@ def join_programs(xmltv_data, xmltv_data_add):
         xmltv_data
     """
     for p in xmltv_data_add.programme:
+        if only_channels is not None:
+            if p.channel not in only_channels:
+                continue
         xmltv_data.programme.append(p)
     return xmltv_data
 
@@ -208,6 +211,23 @@ def search_and_replace_in_start_and_stop(xmltv_data, search, replace):
     for p in xmltv_data.programme:
         p.start = p.start.replace(search, replace)
         p.stop = p.stop.replace(search, replace)
+    return xmltv_data
+
+
+def search_and_replace_channel_id(xmltv_data, current_id, new_id):
+    """Replace in all programs in the channeld id.
+
+    Args:
+        xmltv_data: data object with xmltv data.
+        current_id: channel id to replace
+        new_id: new channel id
+
+    Returns:
+        xmltv_data
+    """
+    for p in xmltv_data.programme:
+        if p.channel == current_id:
+            p.channel = new_id
     return xmltv_data
 
 

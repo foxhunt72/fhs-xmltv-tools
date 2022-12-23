@@ -59,6 +59,31 @@ def play_command_loadxml(task):
     return True
 
 
+def play_command_empty_xml(task):
+    """Play command emptyxml.
+
+    Args:
+        task: task array
+
+    Returns:
+        Good: boolean
+    """
+    from .xmltv_load_save import xmltv_empty
+
+    check_console()
+    store = task.get("store", "default")
+    source_info_url = task.get("source_info_url")
+    source_info_name = task.get("source_info_name")
+    source_data_url = task.get("source_data_url")
+    config.STORE[store] = xmltv_empty(
+        source_info_url=source_info_url,
+        source_info_name=source_info_name,
+        source_data_url=source_data_url
+    )
+    print(f"Create empty xmltv store {store}")
+    return True
+
+
 def play_command_savexml(task):
     """Play command savexml.
 
@@ -82,6 +107,33 @@ def play_command_savexml(task):
     return True
 
 
+def play_command_rename_channel(task):
+    """Play command rename_channel.
+
+    Args:
+        task: task array
+
+    Returns:
+        Good: boolean
+    """
+    from .xmltv_channels import rename_channel
+
+    check_console()
+    store = task.get("store", "default")
+    options_dict = {"new_id": task["new_id"]}
+    if task["only_one"] != "":
+        options_dict["only_one"] = True
+    if task["new_display_name"] != "":
+        options_dict["displayname"] = task["new_display_name"]
+
+    channel_dict = {task["channel_id"]: options_dict}
+    with config.CONSOLE.status(f"Rename channel from store {store}", spinner="dots"):
+        config.STORE[store] = rename_channel(
+            config.STORE[store], channel_dict
+        )
+    return True
+
+
 def play_command_only_channels(task):
     """Play command only_channels.
 
@@ -100,6 +152,9 @@ def play_command_only_channels(task):
         sys.stderr.write(f"missing channels entry in task {str(task)}")
         exit(3)
     channels = task.get("channels")
+    split_char = task.get("split_char","")
+    if type(channels) == str and split_char != "":
+        channels = channels.split(split_char)
     with config.CONSOLE.status(f"Removing channels from store {store}", spinner="dots"):
         config.STORE[store] = channels_remove_all_channels_not_in_list(
             config.STORE[store], channels
@@ -328,9 +383,21 @@ funcdict = {
         "func": play_command_loadxml,
         "help": "loadxml"
     },
+    "emptyxml": {
+        "args": [
+            {"name": "store", "help": "store name", "default": "default"},
+            {"name": "source_info_url", "default": ""},
+            {"name": "source_info_name", "default": ""},
+            {"name": "source_data_url", "default": ""},
+        ],
+        "func": play_command_empty_xml,
+        "alias": ["empty_xml"],
+        "help": "loadxml"
+    },
     "keep_channels": {
         "args": [
             {"name": "store", "help": "store name", "default": "default"},
+            {"name": "split_char", "help": "split channel string by var", "default": ""},
             {"name": "channels", "help": "channels to keep"}
         ],
         "func": play_command_only_channels,
@@ -381,6 +448,17 @@ funcdict = {
         "func": play_command_xmltv2sql,
         "alias": "savesql",
         "help": "xmltv2sql / savesql"
+    },
+    "rename_channel": {
+        "args": [
+            {"name": "store", "help": "store name", "default": "default"},
+            {"name": "channel_id", "help": "channel id to rename"},
+            {"name": "new_id", "help": "new channel id"},
+            {"name": "new_display_name", "default": ""},
+            {"name": "only_one", "help": "rename only first occorunce", "default": ""}
+        ],
+        "func": play_command_rename_channel,
+        "help": "rename channels"
     },
     "clean_sql": {
         "args": [
