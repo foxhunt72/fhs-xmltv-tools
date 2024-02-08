@@ -26,3 +26,4 @@ Changes
 - 0.1.12: cleanup sql data (older then xx days....)
 - 0.1.13: add interactive mode
 - 0.1.14: add rename_channel and emptyxml
+- 0.1.15: add docker options

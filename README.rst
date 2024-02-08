@@ -5,7 +5,7 @@ fhs_xmltv_tools
 Version
 -------
 
-0.1.14
+0.1.15
 
 For changes see changelog_
 
