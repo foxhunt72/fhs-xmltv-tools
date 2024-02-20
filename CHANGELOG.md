@@ -27,3 +27,4 @@ Changes
 - 0.1.13: add interactive mode
 - 0.1.14: add rename_channel and emptyxml
 - 0.1.15: add docker options
+- 0.1.16: converted README.rst to markdown

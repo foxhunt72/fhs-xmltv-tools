@@ -31,7 +31,8 @@ setup(
     author="Richard de Vos",
     author_email="rdevos72@gmail.com",
     description="xmltv tools",
-    long_description=read("README.rst"),
+    long_description=read("README.md"),
+    long_description_content_type='text/markdown',
     entry_points={
         "console_scripts": [
             "fhs-xmltv-tools=fhs_xmltv_tools.cli:main",
